@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Password Randomness Lab: Modulo Bias and Rejection Sampling Explained</title>
+  <meta name="description" content="An interactive experiment demonstrating how modulo bias creates unequal character probabilities in password generators, and how rejection sampling eliminates it. Run simulations in your browser.">
+  <meta property="og:title" content="The Password Randomness Lab: Modulo Bias and Rejection Sampling Explained">
+  <meta property="og:description" content="An interactive browser experiment demonstrating modulo bias and rejection sampling in random character generation.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://letmecopyit.github.io/password-randomness-lab/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Password Randomness Lab — Modulo Bias vs Rejection Sampling">
+  <meta name="twitter:description" content="Can a password generator use cryptographically secure random numbers and still introduce bias? Run the experiment and find out.">
+  <link rel="canonical" href="https://letmecopyit.github.io/password-randomness-lab/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Password Randomness Lab",
+    "description": "An interactive browser experiment demonstrating modulo bias and rejection sampling in random character generation.",
+    "url": "https://letmecopyit.github.io/password-randomness-lab/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires a modern browser with Web Crypto API support",
+    "offers": { "@type": "Offer", "price": "0" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is modulo bias in random number generation?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Modulo bias occurs when the range of a random number source (e.g., 0–255 for a single byte) is not evenly divisible by the number of possible outputs (e.g., a character pool of 7). Using the modulo operator to map random bytes to characters causes some characters to appear slightly more often than others."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does rejection sampling eliminate modulo bias?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Rejection sampling discards random values that fall outside the largest range evenly divisible by the pool size. For example, with a pool of 7 characters, only byte values 0–251 are used (252 ÷ 7 = 36 per character). Values 252–255 are rejected and a new random byte is drawn, ensuring every character has an exactly equal probability of selection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you tell if a password has modulo bias by looking at it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Individual passwords generated with modulo bias look indistinguishable from passwords generated with rejection sampling. The bias only becomes apparent through statistical analysis over a large number of samples."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ============================================
+       SECTION 1: HERO
+       ============================================ -->
+  <section id="hero" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="container hero-content">
+      <h1>Can You Spot Biased Randomness?</h1>
+      <p class="hero-subtitle">An interactive experiment showing why random-looking passwords are not always generated equally.</p>
+      <p class="hero-desc">Two character generators can both produce strings that <em>look</em> random. But one may give certain characters a slightly higher probability than others.</p>
+      <p class="hero-cta-text">Run the experiment and see what happens.</p>
+      <a href="#pool" class="btn btn-primary btn-lg" id="start-experiment-btn">Start Experiment ↓</a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 2: CHARACTER POOL
+       ============================================ -->
+  <section id="pool" class="section pool-section">
+    <div class="container">
+      <span class="section-label">Step 1</span>
+      <h2>Choose a Character Pool</h2>
+      <p class="section-desc">Modulo bias becomes easier to demonstrate with pools whose size does not divide evenly into 256, the range of a single random byte.</p>
+
+      <div class="pool-presets" id="pool-presets">
+        <button class="btn btn-preset active" data-pool="ABCDEFG" id="preset-7">7 Letters</button>
+        <button class="btn btn-preset" data-pool="0123456789" id="preset-10">10 Digits</button>
+        <button class="btn btn-preset" data-pool="abcdefghijklmnopqrstuvwxyz" id="preset-26">26 Lowercase</button>
+        <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" id="preset-52">52 Mixed Case</button>
+        <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" id="preset-62">62 Alphanumeric</button>
+        <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%*-_+=.?" id="preset-71">71 Password Set</button>
+      </div>
+
+      <div class="custom-pool-container">
+        <label for="custom-pool-input">Custom pool:</label>
+        <input type="text" id="custom-pool-input" placeholder="Type unique characters…" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="card pool-info" id="pool-info">
+        <div class="pool-display">
+          <span class="label">Pool:</span>
+          <span class="value mono" id="pool-chars">A B C D E F G</span>
+        </div>
+        <div class="pool-stats">
+          <div class="stat">
+            <span class="label">Pool size</span>
+            <span class="value" id="pool-size">7</span>
+          </div>
+          <div class="stat">
+            <span class="label">Random byte range</span>
+            <span class="value">0 – 255</span>
+          </div>
+        </div>
+        <div class="pool-math" id="pool-math">
+          <div class="math-line" id="math-division">256 ÷ 7 = 36 remainder <strong class="text-yellow">4</strong></div>
+          <div class="math-result text-yellow" id="bias-warning">⚠ 4 characters receive an extra byte mapping — bias is unavoidable with modulo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 3: TWO METHODS
+       ============================================ -->
+  <section id="methods" class="section methods-section">
+    <div class="container">
+      <span class="section-label">Step 2</span>
+      <h2>Two Methods of Character Selection</h2>
+      <p class="section-desc">Both methods use cryptographically secure random bytes. The difference is how those bytes are mapped to the character pool.</p>
+
+      <div class="methods-grid">
+        <!-- Method A: Modulo -->
+        <div class="method-card method-biased">
+          <div class="method-header">
+            <span class="method-badge badge-biased">Method A</span>
+            <h3>Modulo Mapping</h3>
+          </div>
+          <div class="code-block"><code>randomByte % poolSize</code></div>
+          <p>Simple. Common. <span class="text-yellow">Potentially biased.</span></p>
+          <div class="mapping-table" id="modulo-mapping-table"></div>
+          <div class="method-verdict verdict-biased">
+            <span class="verdict-icon">⚠</span>
+            <span id="modulo-verdict-text">Unequal probability</span>
+          </div>
+        </div>
+
+        <!-- Method B: Rejection -->
+        <div class="method-card method-unbiased">
+          <div class="method-header">
+            <span class="method-badge badge-unbiased">Method B</span>
+            <h3>Rejection Sampling</h3>
+          </div>
+          <p>Values outside the largest evenly divisible range are discarded. A new random value is drawn.</p>
+          <div class="mapping-table" id="rejection-mapping-table"></div>
+          <div class="method-verdict verdict-unbiased">
+            <span class="verdict-icon">✓</span>
+            <span>Equal probability</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 4: RUN THE EXPERIMENT
+       ============================================ -->
+  <section id="experiment" class="section experiment-section">
+    <div class="container">
+      <span class="section-label">Step 3</span>
+      <h2>Run the Experiment</h2>
+      <p class="section-desc">Generate random samples using both methods and compare the resulting character distributions side by side.</p>
+
+      <div class="sample-controls">
+        <span class="label">Number of samples:</span>
+        <div class="sample-buttons" id="sample-buttons">
+          <button class="btn btn-preset" data-count="1000" id="sample-1k">1,000</button>
+          <button class="btn btn-preset active" data-count="10000" id="sample-10k">10,000</button>
+          <button class="btn btn-preset" data-count="100000" id="sample-100k">100,000</button>
+          <button class="btn btn-preset" data-count="1000000" id="sample-1m">1,000,000</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-lg" id="run-experiment-btn">
+        <span id="run-btn-text">▶ Generate Distribution</span>
+      </button>
+
+      <div class="progress-container" id="progress-container" hidden>
+        <div class="progress-bar" id="progress-bar"></div>
+        <span class="progress-text" id="progress-text">Generating…</span>
+      </div>
+
+      <div class="results-grid" id="results-grid" hidden>
+        <!-- Modulo Results -->
+        <div class="result-card">
+          <h3><span class="method-badge badge-biased">A</span> Modulo Mapping Distribution</h3>
+          <div class="chart-container" id="modulo-chart"></div>
+          <div class="stats-summary" id="modulo-stats"></div>
+        </div>
+        <!-- Rejection Results -->
+        <div class="result-card">
+          <h3><span class="method-badge badge-unbiased">B</span> Rejection Sampling Distribution</h3>
+          <div class="chart-container" id="rejection-chart"></div>
+          <div class="stats-summary" id="rejection-stats"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 5: TRUST CHALLENGE
+       ============================================ -->
+  <section id="challenge" class="section challenge-section">
+    <div class="container">
+      <span class="section-label">The Interesting Question</span>
+      <h2>Which Generator Would You Trust?</h2>
+      <p class="section-desc">Both generators use the same character pool and cryptographically secure random bytes. One uses modulo mapping. The other uses rejection sampling.</p>
+
+      <div class="generators-grid" id="generators-grid">
+        <div class="generator-card">
+          <h3 id="gen-a-label">Generator A</h3>
+          <div class="generator-password" id="gen-a-password"></div>
+          <button class="btn" id="gen-a-regen">Regenerate</button>
+        </div>
+        <div class="generator-card">
+          <h3 id="gen-b-label">Generator B</h3>
+          <div class="generator-password" id="gen-b-password"></div>
+          <button class="btn" id="gen-b-regen">Regenerate</button>
+        </div>
+      </div>
+
+      <p class="challenge-question">Can you tell which one has statistical bias?</p>
+
+      <button class="btn btn-primary" id="reveal-answer-btn">Reveal Answer</button>
+
+      <div class="reveal-container" id="reveal-container">
+        <div class="reveal-card">
+          <p><strong>You cannot determine randomness quality by looking at a few generated passwords.</strong></p>
+          <p>A password can look completely random even when the underlying character-selection process is slightly biased. Individual outputs from both methods are visually indistinguishable.</p>
+          <p>Only statistical analysis over large samples reveals the difference. That is exactly what the experiment above demonstrates.</p>
+          <p><strong>Implementation matters.</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 6: WHY THIS MATTERS
+       ============================================ -->
+  <section id="why-it-matters" class="section why-section">
+    <div class="container">
+      <span class="section-label">Why This Matters</span>
+      <h2>Secure Password Generation</h2>
+
+      <div class="why-content">
+        <p>A password can look completely random even when the underlying character-selection process is slightly biased. Secure password generation depends on both the <strong>source of randomness</strong> and <strong>how those random values are mapped</strong> to the available character set.</p>
+        <p>MacroToolkit's Password Generator uses browser-based cryptographically secure randomness and rejection sampling to avoid modulo bias when selecting characters.</p>
+      </div>
+
+      <a href="https://www.macrotoolkit.com/generator/password-generator" target="_blank" rel="noopener" class="cta-card" id="macrotoolkit-cta">
+        <span class="cta-arrow">→</span>
+        <div class="cta-label">Try the implementation</div>
+        <div class="cta-title">MacroToolkit Password Generator</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 7: FURTHER READING
+       ============================================ -->
+  <section id="further-reading" class="section reading-section">
+    <div class="container">
+      <span class="section-label">Learn More</span>
+      <h2>Further Technical Reading</h2>
+
+      <div class="reading-cards">
+        <a href="https://www.macrotoolkit.com/blog/cryptographically-secure-random-numbers" target="_blank" rel="noopener" class="reading-card" id="reading-csprng">
+          <div class="reading-icon">📖</div>
+          <div class="reading-title">Cryptographically Secure Random Numbers</div>
+          <div class="reading-desc">Understanding why crypto.getRandomValues() matters and how it differs from Math.random().</div>
+        </a>
+        <a href="https://www.macrotoolkit.com/utilities/password-entropy-calculator" target="_blank" rel="noopener" class="reading-card" id="reading-entropy">
+          <div class="reading-icon">📖</div>
+          <div class="reading-title">Password Entropy Calculator</div>
+          <div class="reading-desc">Calculate the exact mathematical bits of entropy for any character set and length combination.</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      Built as an open-source educational experiment · <a href="https://github.com/LetMecopyit/password-randomness-lab" target="_blank" rel="noopener">View source on GitHub</a>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
