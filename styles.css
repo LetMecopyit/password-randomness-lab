@@ -170,6 +170,11 @@ a:hover {
   font-size: 1rem;
 }
 
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+}
+
 .btn-preset.active {
   background: rgba(56, 139, 253, 0.15);
   border-color: var(--accent-blue);
@@ -654,23 +659,71 @@ a:hover {
 /* ==========================================
    SECTION 4: EXPERIMENT
    ========================================== */
-.sample-controls {
+.experiment-toolbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
   margin-bottom: 24px;
 }
 
-.sample-controls .label {
-  font-size: 0.875rem;
+.mode-toggle-group, .sample-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar-label {
+  font-size: 0.85rem;
+  font-weight: 500;
   color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.btn-group {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-inset);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-muted);
+}
+
+.btn-group .btn {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.btn-group .btn.active {
+  background: var(--bg-tertiary);
+  color: var(--accent-blue);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .sample-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
+}
+
+.share-btn {
+  margin-left: auto;
+  border-color: rgba(88, 166, 255, 0.3);
+  color: var(--accent-blue);
+}
+
+.share-btn:hover {
+  background: rgba(88, 166, 255, 0.1);
+  border-color: var(--accent-blue);
 }
 
 #run-experiment-btn {
@@ -720,16 +773,54 @@ a:hover {
   padding: 24px;
 }
 
+.result-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 .result-card h3 {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .result-card h3 .method-badge { margin-bottom: 0; }
+
+.badge-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.badge-status-biased {
+  background: rgba(210, 153, 34, 0.15);
+  color: var(--accent-yellow);
+  border: 1px solid rgba(210, 153, 34, 0.3);
+}
+
+.badge-status-unbiased {
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--accent-green);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+
+.target-probability {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border-muted);
+}
 
 /* Chart bars */
 .chart-container { margin-bottom: 16px; }
@@ -783,20 +874,10 @@ a:hover {
   background: linear-gradient(90deg, rgba(63,185,80,0.4), rgba(63,185,80,0.6));
 }
 
-.chart-expected-line {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--text-tertiary);
-  z-index: 2;
-  opacity: 0.6;
-}
-
 .chart-value {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  width: 55px;
+  width: 62px;
   text-align: right;
   flex-shrink: 0;
   color: var(--text-secondary);
@@ -805,7 +886,7 @@ a:hover {
 .chart-deviation {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  width: 55px;
+  width: 60px;
   text-align: right;
   flex-shrink: 0;
 }
@@ -831,6 +912,79 @@ a:hover {
   font-family: var(--font-mono);
   font-size: 1rem;
   font-weight: 600;
+}
+
+/* Mathematical Reason Card */
+.math-reason-card {
+  margin-top: 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-left: 4px solid var(--accent-yellow);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.math-reason-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.math-reason-icon { font-size: 1.5rem; line-height: 1; }
+
+.math-reason-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.math-reason-sub {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+.math-reason-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.math-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin: 14px 0;
+}
+
+.math-table th, .math-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.math-table th {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--bg-inset);
+}
+
+.math-table tr.row-over td { color: var(--accent-yellow); font-weight: 500; }
+.math-table tr.row-normal td { color: var(--accent-green); }
+
+.math-highlight-box {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-top: 14px;
+  font-size: 0.875rem;
 }
 
 /* ==========================================
@@ -1067,8 +1221,11 @@ a:hover {
   .generators-grid { grid-template-columns: 1fr; }
   .reading-cards { grid-template-columns: 1fr; }
 
+  .experiment-toolbar { flex-direction: column; align-items: stretch; }
+  .mode-toggle-group, .sample-controls { flex-direction: column; align-items: stretch; }
+  .share-btn { margin-left: 0; width: 100%; justify-content: center; }
+
   .pool-stats { flex-direction: column; gap: 12px; }
-  .sample-controls { flex-direction: column; align-items: flex-start; }
 
   .stats-summary { grid-template-columns: 1fr; gap: 8px; }
 
@@ -1076,7 +1233,7 @@ a:hover {
   .custom-pool-container input { max-width: 100%; }
 
   .chart-bar-row { gap: 4px; }
-  .chart-value { width: 48px; font-size: 0.7rem; }
+  .chart-value { width: 52px; font-size: 0.7rem; }
   .chart-deviation { width: 48px; font-size: 0.65rem; }
 }
 

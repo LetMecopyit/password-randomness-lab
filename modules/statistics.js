@@ -3,6 +3,84 @@
  */
 
 /**
+ * Calculate exact theoretical probabilities for Modulo Mapping vs Rejection Sampling.
+ * @param {string} pool - Character pool string
+ * @returns {{ modulo: Object, rejection: Object, mathReason: Object }}
+ */
+export function calculateTheoreticalDistribution(pool) {
+  const size = pool.length;
+  const quotient = Math.floor(256 / size);
+  const remainder = 256 % size;
+  const expectedPct = 100 / size;
+
+  const moduloPercentages = {};
+  const rejectionPercentages = {};
+  const moduloCounts = {};
+  const rejectionCounts = {};
+
+  const overProb = ((quotient + 1) / 256) * 100;
+  const normalProb = (quotient / 256) * 100;
+
+  for (let i = 0; i < size; i++) {
+    const char = pool[i];
+    const isBiased = i < remainder && remainder !== 0;
+    const byteCount = isBiased ? quotient + 1 : quotient;
+
+    moduloCounts[char] = byteCount;
+    moduloPercentages[char] = (byteCount / 256) * 100;
+
+    rejectionCounts[char] = quotient;
+    rejectionPercentages[char] = expectedPct;
+  }
+
+  // Theoretical Chi-Squared for Modulo
+  let modChiSquared = 0;
+  const expectedByteCountPerChar = 256 / size;
+  for (let i = 0; i < size; i++) {
+    const char = pool[i];
+    const diff = moduloCounts[char] - expectedByteCountPerChar;
+    modChiSquared += (diff * diff) / expectedByteCountPerChar;
+  }
+
+  const modMaxDev = remainder > 0 ? Math.max(Math.abs(overProb - expectedPct), Math.abs(normalProb - expectedPct)) : 0;
+
+  return {
+    modulo: {
+      percentages: moduloPercentages,
+      freq: moduloCounts,
+      totalSamples: 256,
+      expectedPct: expectedPct,
+      expected: expectedByteCountPerChar,
+      chiSquared: modChiSquared,
+      maxDeviation: { maxDev: modMaxDev, maxChar: pool[0] },
+      isTheoretical: true
+    },
+    rejection: {
+      percentages: rejectionPercentages,
+      freq: rejectionCounts,
+      totalSamples: size * quotient,
+      expectedPct: expectedPct,
+      expected: quotient,
+      chiSquared: 0,
+      maxDeviation: { maxDev: 0, maxChar: pool[0] },
+      isTheoretical: true
+    },
+    mathReason: {
+      poolSize: size,
+      quotient,
+      remainder,
+      overCount: remainder,
+      normalCount: size - remainder,
+      overByteCount: quotient + 1,
+      normalByteCount: quotient,
+      overPct: overProb,
+      normalPct: normalProb,
+      expectedPct: expectedPct
+    }
+  };
+}
+
+/**
  * Calculate the chi-squared test statistic.
  * Measures how far observed frequencies deviate from expected uniform distribution.
  * @param {Object} observed - Frequency map { char: count }

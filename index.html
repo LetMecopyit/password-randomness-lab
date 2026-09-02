@@ -196,17 +196,32 @@
   <section id="experiment" class="section experiment-section">
     <div class="container">
       <span class="section-label">Step 3</span>
-      <h2>Run the Experiment</h2>
-      <p class="section-desc">Generate thousands of random characters and see if the distributions stay fair or show bias.</p>
+      <h2>Run the Experiment & Compare Distributions</h2>
+      <p class="section-desc">Analyze distributions via live CSPRNG simulation or exact mathematical expectation.</p>
 
-      <div class="sample-controls">
-        <span class="label">Number of samples:</span>
-        <div class="sample-buttons" id="sample-buttons">
-          <button class="btn btn-preset" data-count="1000" id="sample-1k">1,000</button>
-          <button class="btn btn-preset active" data-count="10000" id="sample-10k">10,000</button>
-          <button class="btn btn-preset" data-count="100000" id="sample-100k">100,000</button>
-          <button class="btn btn-preset" data-count="1000000" id="sample-1m">1,000,000</button>
+      <!-- Mode Selector & Share Controls -->
+      <div class="experiment-toolbar">
+        <div class="mode-toggle-group">
+          <span class="toolbar-label">Mode:</span>
+          <div class="btn-group" id="mode-buttons">
+            <button class="btn btn-preset active" data-mode="simulation" id="mode-simulation">🎲 Live Simulation</button>
+            <button class="btn btn-preset" data-mode="theoretical" id="mode-theoretical">📐 Mathematical Expectation</button>
+          </div>
         </div>
+
+        <div class="sample-controls" id="simulation-controls">
+          <span class="toolbar-label">Samples:</span>
+          <div class="sample-buttons" id="sample-buttons">
+            <button class="btn btn-preset" data-count="1000" id="sample-1k">1,000</button>
+            <button class="btn btn-preset active" data-count="10000" id="sample-10k">10,000</button>
+            <button class="btn btn-preset" data-count="100000" id="sample-100k">100,000</button>
+            <button class="btn btn-preset" data-count="1000000" id="sample-1m">1,000,000</button>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary btn-sm share-btn" id="share-link-btn" title="Copy shareable link for this exact experiment configuration">
+          <span id="share-btn-text">🔗 Copy Share Link</span>
+        </button>
       </div>
 
       <button class="btn btn-primary btn-lg" id="run-experiment-btn">
@@ -218,19 +233,41 @@
         <span class="progress-text" id="progress-text">Generating…</span>
       </div>
 
+      <!-- Results Grid -->
       <div class="results-grid" id="results-grid" hidden>
         <!-- Modulo Results -->
         <div class="result-card">
-          <h3><span class="method-badge badge-biased">A</span> Modulo Mapping Distribution</h3>
+          <div class="result-card-header">
+            <h3><span class="method-badge badge-biased">A</span> Modulo Mapping Distribution</h3>
+            <span class="badge-status badge-status-biased" id="modulo-status-badge">Statistically Biased</span>
+          </div>
+          <div class="target-probability" id="modulo-target-prob">Expected Target: 14.2857%</div>
           <div class="chart-container" id="modulo-chart"></div>
           <div class="stats-summary" id="modulo-stats"></div>
         </div>
+
         <!-- Rejection Results -->
         <div class="result-card">
-          <h3><span class="method-badge badge-unbiased">B</span> Rejection Sampling Distribution</h3>
+          <div class="result-card-header">
+            <h3><span class="method-badge badge-unbiased">B</span> Rejection Sampling Distribution</h3>
+            <span class="badge-status badge-status-unbiased" id="rejection-status-badge">Statistically Unbiased</span>
+          </div>
+          <div class="target-probability" id="rejection-target-prob">Expected Target: 14.2857%</div>
           <div class="chart-container" id="rejection-chart"></div>
           <div class="stats-summary" id="rejection-stats"></div>
         </div>
+      </div>
+
+      <!-- Mathematical Reason Card -->
+      <div class="math-reason-card" id="math-reason-card" hidden>
+        <div class="math-reason-header">
+          <span class="math-reason-icon">📐</span>
+          <div>
+            <h3>The Mathematical Reason for Modulo Bias</h3>
+            <p class="math-reason-sub">Distinguishing algorithmic bias from natural random sampling noise</p>
+          </div>
+        </div>
+        <div class="math-reason-body" id="math-reason-body"></div>
       </div>
 
       <!-- Comprehensive Terms & Results Explainer -->
@@ -242,21 +279,21 @@
         <div class="terms-grid">
           <div class="term-item">
             <span class="term-title">📊 Chi-Squared (χ²) Statistic</span>
-            <p>A formula that measures <strong>total unfairness</strong>. A score near <strong>0</strong> means every letter appeared equally. Higher numbers mean heavy mathematical bias!</p>
+            <p>Chi-squared (χ²) measures how far the observed distribution differs from the expected distribution. Larger values indicate a larger deviation, although the sample size must also be considered when interpreting the result.</p>
           </div>
           <div class="term-item">
             <span class="term-title">🎯 Expected %</span>
-            <p>The <strong>perfect target percentage</strong> if every character had an exact equal chance (e.g. 100% ÷ 7 characters = <strong>14.29%</strong> each).</p>
+            <p>The exact theoretical target percentage ($100\% \div \text{pool size}$) each character would receive in a perfectly uniform distribution.</p>
           </div>
           <div class="term-item">
             <span class="term-title">📈 Max Deviation</span>
-            <p>The <strong>biggest gap</strong> between a character's actual percentage and its expected fair percentage.</p>
+            <p>The single largest difference between a character's actual percentage and its expected fair target percentage.</p>
           </div>
           <div class="term-item">
-            <span class="term-title">🎨 Bar Colors Legend</span>
+            <span class="term-title">🎨 Bar Colors & Legend</span>
             <div class="legend-pills">
-              <span class="pill pill-gold">🟡 Gold: Picked TOO OFTEN (Got extra byte mappings)</span>
-              <span class="pill pill-red">🔴 Red: Picked TOO RARELY (Got fewer byte mappings)</span>
+              <span class="pill pill-gold">🟡 Gold: Picked TOO OFTEN (Received extra byte mappings)</span>
+              <span class="pill pill-red">🔴 Red: Picked TOO RARELY (Received fewer byte mappings)</span>
               <span class="pill pill-green">🟢 Green: Picked with FAIR, uniform probability</span>
             </div>
           </div>
