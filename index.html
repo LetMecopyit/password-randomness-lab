@@ -88,7 +88,16 @@
     <div class="container">
       <span class="section-label">Step 1</span>
       <h2>Choose a Character Pool</h2>
-      <p class="section-desc">Modulo bias becomes easier to demonstrate with pools whose size does not divide evenly into 256, the range of a single random byte.</p>
+      <p class="section-desc">Select how many characters your password generator is allowed to choose from.</p>
+
+      <!-- Simple Explainer Box -->
+      <div class="simple-explainer">
+        <div class="explainer-header">
+          <span class="explainer-icon">💡</span>
+          <strong>In Simple Terms: How Computers Pick Random Characters</strong>
+        </div>
+        <p>Computers generate randomness as numbers from <strong>0 to 255</strong> (256 possible values in 1 byte). To pick a character for your password, the program has to split those 256 numbers among all the letters in your character pool.</p>
+      </div>
 
       <div class="pool-presets" id="pool-presets">
         <button class="btn btn-preset active" data-pool="ABCDEFG" id="preset-7">7 Letters</button>
@@ -106,7 +115,7 @@
 
       <div class="card pool-info" id="pool-info">
         <div class="pool-display">
-          <span class="label">Pool:</span>
+          <span class="label">Character Pool:</span>
           <span class="value mono" id="pool-chars">A B C D E F G</span>
         </div>
         <div class="pool-stats">
@@ -134,7 +143,7 @@
     <div class="container">
       <span class="section-label">Step 2</span>
       <h2>Two Methods of Character Selection</h2>
-      <p class="section-desc">Both methods use cryptographically secure random bytes. The difference is how those bytes are mapped to the character pool.</p>
+      <p class="section-desc">Both methods use secure random numbers. The difference is how those numbers are assigned to characters.</p>
 
       <div class="methods-grid">
         <!-- Method A: Modulo -->
@@ -144,7 +153,13 @@
             <h3>Modulo Mapping</h3>
           </div>
           <div class="code-block"><code>randomByte % poolSize</code></div>
-          <p>Simple. Common. <span class="text-yellow">Potentially biased.</span></p>
+          <p>Takes the remainder after division. <span class="text-yellow">Fast, but creates unfair probabilities.</span></p>
+
+          <div class="analogy-box analogy-biased">
+            <strong>🎟️ Simple Analogy:</strong>
+            <p>Imagine handing out 256 raffle tickets to 7 people. 4 people get 37 tickets, while 3 people only get 36 tickets. The first 4 people have a higher chance of winning!</p>
+          </div>
+
           <div class="mapping-table" id="modulo-mapping-table"></div>
           <div class="method-verdict verdict-biased">
             <span class="verdict-icon">⚠</span>
@@ -158,7 +173,13 @@
             <span class="method-badge badge-unbiased">Method B</span>
             <h3>Rejection Sampling</h3>
           </div>
-          <p>Values outside the largest evenly divisible range are discarded. A new random value is drawn.</p>
+          <p>Discards leftover numbers outside the even range and draws a new random number.</p>
+
+          <div class="analogy-box analogy-unbiased">
+            <strong>🎟️ Simple Analogy:</strong>
+            <p>Throw away the 4 leftover raffle tickets so everyone gets exactly 36 tickets. Now every single person has an identical 100% fair chance!</p>
+          </div>
+
           <div class="mapping-table" id="rejection-mapping-table"></div>
           <div class="method-verdict verdict-unbiased">
             <span class="verdict-icon">✓</span>
@@ -176,7 +197,7 @@
     <div class="container">
       <span class="section-label">Step 3</span>
       <h2>Run the Experiment</h2>
-      <p class="section-desc">Generate random samples using both methods and compare the resulting character distributions side by side.</p>
+      <p class="section-desc">Generate thousands of random characters and see if the distributions stay fair or show bias.</p>
 
       <div class="sample-controls">
         <span class="label">Number of samples:</span>
@@ -211,6 +232,37 @@
           <div class="stats-summary" id="rejection-stats"></div>
         </div>
       </div>
+
+      <!-- Comprehensive Terms & Results Explainer -->
+      <div class="terms-explainer-card" id="terms-explainer-card" hidden>
+        <div class="terms-header">
+          <span class="terms-icon">📖</span>
+          <h3>Understanding Your Results in Simple Terms</h3>
+        </div>
+        <div class="terms-grid">
+          <div class="term-item">
+            <span class="term-title">📊 Chi-Squared (χ²) Statistic</span>
+            <p>A formula that measures <strong>total unfairness</strong>. A score near <strong>0</strong> means every letter appeared equally. Higher numbers mean heavy mathematical bias!</p>
+          </div>
+          <div class="term-item">
+            <span class="term-title">🎯 Expected %</span>
+            <p>The <strong>perfect target percentage</strong> if every character had an exact equal chance (e.g. 100% ÷ 7 characters = <strong>14.29%</strong> each).</p>
+          </div>
+          <div class="term-item">
+            <span class="term-title">📈 Max Deviation</span>
+            <p>The <strong>biggest gap</strong> between a character's actual percentage and its expected fair percentage.</p>
+          </div>
+          <div class="term-item">
+            <span class="term-title">🎨 Bar Colors Legend</span>
+            <div class="legend-pills">
+              <span class="pill pill-gold">🟡 Gold: Picked TOO OFTEN (Got extra byte mappings)</span>
+              <span class="pill pill-red">🔴 Red: Picked TOO RARELY (Got fewer byte mappings)</span>
+              <span class="pill pill-green">🟢 Green: Picked with FAIR, uniform probability</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -219,9 +271,9 @@
        ============================================ -->
   <section id="challenge" class="section challenge-section">
     <div class="container">
-      <span class="section-label">The Interesting Question</span>
+      <span class="section-label">Step 4</span>
       <h2>Which Generator Would You Trust?</h2>
-      <p class="section-desc">Both generators use the same character pool and cryptographically secure random bytes. One uses modulo mapping. The other uses rejection sampling.</p>
+      <p class="section-desc">Both generators below create passwords using secure random numbers. One generator uses biased Modulo Mapping, while the other uses unbiased Rejection Sampling.</p>
 
       <div class="generators-grid" id="generators-grid">
         <div class="generator-card">
@@ -236,16 +288,16 @@
         </div>
       </div>
 
-      <p class="challenge-question">Can you tell which one has statistical bias?</p>
+      <p class="challenge-question">Can you tell which one has statistical bias just by reading them?</p>
 
       <button class="btn btn-primary" id="reveal-answer-btn">Reveal Answer</button>
 
       <div class="reveal-container" id="reveal-container">
         <div class="reveal-card">
-          <p><strong>You cannot determine randomness quality by looking at a few generated passwords.</strong></p>
-          <p>A password can look completely random even when the underlying character-selection process is slightly biased. Individual outputs from both methods are visually indistinguishable.</p>
-          <p>Only statistical analysis over large samples reveals the difference. That is exactly what the experiment above demonstrates.</p>
-          <p><strong>Implementation matters.</strong></p>
+          <p><strong>Answer: You cannot tell by looking at individual passwords!</strong></p>
+          <p>A password can <em>look</em> completely random even when the underlying process gives certain letters a 0.4% higher chance of selection. Human eyes cannot spot mathematical bias in a short string.</p>
+          <p>Only statistical testing across tens of thousands of samples reveals the flaw. That is why proper cryptographic implementation matters so much!</p>
+          <p><strong>Security relies on math, not appearance.</strong></p>
         </div>
       </div>
     </div>

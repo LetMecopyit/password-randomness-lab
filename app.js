@@ -53,6 +53,7 @@ const dom = {
   rejectionChart: document.getElementById('rejection-chart'),
   moduloStats: document.getElementById('modulo-stats'),
   rejectionStats: document.getElementById('rejection-stats'),
+  termsExplainerCard: document.getElementById('terms-explainer-card'),
 
   // Challenge section
   genAPassword: document.getElementById('gen-a-password'),
@@ -105,11 +106,11 @@ function updatePoolDisplay() {
 
   if (remainder === 0) {
     dom.mathDivision.innerHTML = `256 ÷ ${size} = ${quotient} remainder <strong class="text-green">0</strong>`;
-    dom.biasWarning.textContent = '✓ Perfectly divisible — no modulo bias with this pool size.';
+    dom.biasWarning.textContent = '✓ Perfectly divisible — no modulo bias with this pool size because 256 splits evenly!';
     dom.biasWarning.className = 'math-result no-bias';
   } else {
     dom.mathDivision.innerHTML = `256 ÷ ${size} = ${quotient} remainder <strong class="text-yellow">${remainder}</strong>`;
-    dom.biasWarning.textContent = `⚠ ${remainder} character${remainder > 1 ? 's' : ''} receive an extra byte mapping — bias is unavoidable with modulo.`;
+    dom.biasWarning.textContent = `⚠ ${remainder} character${remainder > 1 ? 's' : ''} receive 1 extra byte mapping — bias is unavoidable with modulo math!`;
     dom.biasWarning.className = 'math-result text-yellow';
   }
 }
@@ -135,7 +136,7 @@ function updateMappingTables() {
   for (let i = 0; i < showCount; i++) {
     const isBiased = i < remainder && remainder !== 0;
     const rowClass = isBiased ? 'biased' : '';
-    const badge = isBiased ? ' ⚠' : '';
+    const badge = isBiased ? ' ⚠ (+1)' : '';
     moduloHTML += `<tr class="${rowClass}">
       <td>${escapeHtml(pool[i])}</td>
       <td>${i}, ${i + size}, ${i + size * 2}, …</td>
@@ -154,7 +155,7 @@ function updateMappingTables() {
   if (remainder === 0) {
     dom.moduloVerdictText.textContent = 'No bias for this pool size';
   } else {
-    dom.moduloVerdictText.textContent = 'Unequal probability';
+    dom.moduloVerdictText.textContent = 'Unequal probability (Biased)';
   }
 
   // Rejection sampling table
@@ -178,7 +179,7 @@ function updateMappingTables() {
   if (256 % size !== 0) {
     rejectionHTML += `<tr class="discarded">
       <td colspan="2">Values ${limit}–255</td>
-      <td>discarded</td>
+      <td>discarded & redrawn</td>
     </tr>`;
   }
 
@@ -195,9 +196,10 @@ async function runExperiment() {
   state.isRunning = true;
 
   dom.runBtn.disabled = true;
-  dom.runBtnText.textContent = 'Running…';
+  dom.runBtnText.textContent = 'Running simulation…';
   dom.progressContainer.hidden = false;
   dom.resultsGrid.hidden = true;
+  if (dom.termsExplainerCard) dom.termsExplainerCard.hidden = true;
   dom.progressBar.style.width = '0%';
   dom.progressText.textContent = 'Generating random bytes…';
 
@@ -224,6 +226,7 @@ async function runExperiment() {
     dom.progressContainer.hidden = true;
     renderResults(results);
     dom.resultsGrid.hidden = false;
+    if (dom.termsExplainerCard) dom.termsExplainerCard.hidden = false;
     dom.resultsGrid.classList.add('fade-in-up');
 
     // Scroll results into view
@@ -261,7 +264,7 @@ function renderChart(container, data, mode) {
   const maxVal = Math.max(...values);
   const range = maxVal - minVal;
 
-  // Threshold for "biased" coloring: > 0.5 * theoretical bias
+  // Threshold for "biased" coloring
   const theoreticalBias = (256 % pool.length !== 0)
     ? Math.abs(1 / pool.length - Math.floor(256 / pool.length) / 256) * 100
     : 0;
@@ -272,7 +275,7 @@ function renderChart(container, data, mode) {
     const pct = percentages[char];
     const deviation = pct - data.expectedPct;
 
-    // Scale bar: map to 50%-100% range for visibility
+    // Scale bar
     let barWidth;
     if (range < 0.001) {
       barWidth = 85; // All equal
@@ -323,15 +326,15 @@ function renderChart(container, data, mode) {
 
 function renderStatsSummary(container, data) {
   container.innerHTML = `
-    <div class="stat-item">
+    <div class="stat-item" title="Chi-squared (χ²): Measures total unfairness of the distribution. 0 means perfectly fair!">
       <div class="stat-label">Chi-squared (χ²)</div>
       <div class="stat-value">${data.chiSquared.toFixed(2)}</div>
     </div>
-    <div class="stat-item">
-      <div class="stat-label">Expected</div>
+    <div class="stat-item" title="Expected %: The fair target percentage for every character if selection were 100% equal.">
+      <div class="stat-label">Expected target</div>
       <div class="stat-value">${data.expectedPct.toFixed(2)}%</div>
     </div>
-    <div class="stat-item">
+    <div class="stat-item" title="Max deviation: The single largest gap between a character's actual percentage and its expected target percentage.">
       <div class="stat-label">Max deviation</div>
       <div class="stat-value">${data.maxDeviation.maxDev.toFixed(3)}%</div>
     </div>
