@@ -66,15 +66,53 @@ body {
 }
 
 /* ---- Typography & Headings ---- */
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
-  line-height: 1.25;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 h2 {
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: 8px;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  color: var(--accent-blue);
+}
+
+h5 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 14px;
+  margin-bottom: 4px;
+  color: var(--accent-purple);
+}
+
+h6 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  color: var(--accent-yellow);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 p {
@@ -1139,7 +1177,126 @@ a:hover {
 }
 
 /* ==========================================
-   SECTION 7: FURTHER READING
+   HEADER NAVIGATION
+   ========================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.logo:hover {
+  text-decoration: none;
+  color: var(--accent-blue);
+}
+
+.logo-icon {
+  font-size: 1.25rem;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.site-nav a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+.site-nav a:hover {
+  color: var(--accent-blue);
+  text-decoration: none;
+}
+
+/* ==========================================
+   WHY SECTION SUBTITLES
+   ========================================== */
+.why-subtitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+/* ==========================================
+   GUIDE & FAQ SECTIONS
+   ========================================== */
+.guide-section .card {
+  padding: 32px;
+}
+
+.guide-block {
+  margin-bottom: 32px;
+}
+
+.guide-block:last-child {
+  margin-bottom: 0;
+}
+
+.mono-box {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--accent-blue);
+  margin: 12px 0 16px 0;
+  overflow-x: auto;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.faq-card {
+  padding: 24px;
+}
+
+.faq-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: var(--accent-blue);
+}
+
+.faq-card p {
+  margin-bottom: 0;
+  color: var(--text-secondary);
+  font-size: 0.925rem;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   FURTHER READING
    ========================================== */
 .reading-section .container { max-width: 720px; }
 
@@ -1191,6 +1348,7 @@ a:hover {
   text-align: center;
   color: var(--text-tertiary);
   font-size: 0.8rem;
+  border-top: 1px solid var(--border-muted);
 }
 
 .site-footer a { color: var(--text-secondary); }
@@ -1212,6 +1370,9 @@ a:hover {
    RESPONSIVE
    ========================================== */
 @media (max-width: 768px) {
+  .header-content { flex-direction: column; height: auto; padding: 12px 0; gap: 8px; }
+  .site-nav { flex-wrap: wrap; justify-content: center; gap: 12px; }
+  
   .section { padding: 56px 0; }
   .section h2 { font-size: 1.4rem; }
 
@@ -1239,9 +1400,10 @@ a:hover {
 
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
-  .hero h1 { font-size: 1.75rem; }
+  .hero h1 { font-size: 1.6rem; }
   .hero-subtitle { font-size: 1rem; }
   .pool-presets { gap: 6px; }
   .btn { font-size: 0.8rem; padding: 6px 12px; }
   .btn-lg { padding: 10px 20px; font-size: 0.9rem; }
+  .guide-section .card { padding: 20px; }
 }

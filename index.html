@@ -4,34 +4,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="google0c59b1ebf0241c76">
-  <title>The Password Randomness Lab: Modulo Bias and Rejection Sampling Explained</title>
-  <meta name="description" content="An interactive experiment demonstrating how modulo bias creates unequal character probabilities in password generators, and how rejection sampling eliminates it. Run simulations in your browser.">
-  <meta property="og:title" content="The Password Randomness Lab: Modulo Bias and Rejection Sampling Explained">
-  <meta property="og:description" content="An interactive browser experiment demonstrating modulo bias and rejection sampling in random character generation.">
+  <title>Modulo Mapping Bias & Rejection Sampling for Secure Passwords | Cybersecurity Lab</title>
+  <meta name="description" content="Understand modulo mapping bias, rejection sampling and modulo mapping in secure password generators. Interactive cybersecurity lab exploring CSPRNG bias.">
+  <meta name="keywords" content="modulo mapping bias, rejection sampling and modulo mapping, secure password, cybersecurity, CSPRNG, random number generator, password entropy, cryptographic security">
+  <meta name="author" content="Sreehari Pradeep">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://letmecopyit.github.io/password-randomness-lab/">
+  <meta property="og:title" content="Modulo Mapping Bias & Rejection Sampling for Secure Passwords | Cybersecurity Lab">
+  <meta property="og:description" content="Understand modulo mapping bias, rejection sampling and modulo mapping in secure password generators. Interactive cybersecurity lab exploring CSPRNG bias.">
+  <meta property="og:image" content="https://letmecopyit.github.io/password-randomness-lab/og-image.png">
+
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Password Randomness Lab — Modulo Bias vs Rejection Sampling">
-  <meta name="twitter:description" content="Can a password generator use cryptographically secure random numbers and still introduce bias? Run the experiment and find out.">
+  <meta name="twitter:title" content="Modulo Mapping Bias vs Rejection Sampling | Secure Password Cybersecurity Lab">
+  <meta name="twitter:description" content="Can a password generator use cryptographically secure random numbers and still introduce modulo mapping bias? Run interactive cybersecurity simulations.">
+  <meta name="twitter:image" content="https://letmecopyit.github.io/password-randomness-lab/og-image.png">
+
   <link rel="canonical" href="https://letmecopyit.github.io/password-randomness-lab/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 
+  <!-- JSON-LD Structured Data: WebApplication -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Password Randomness Lab",
-    "description": "An interactive browser experiment demonstrating modulo bias and rejection sampling in random character generation.",
+    "name": "Password Randomness Lab: Modulo Mapping Bias & Rejection Sampling",
+    "description": "Interactive cybersecurity experiment examining modulo mapping bias, rejection sampling and modulo mapping techniques for generating secure passwords using CSPRNGs.",
     "url": "https://letmecopyit.github.io/password-randomness-lab/",
-    "applicationCategory": "EducationalApplication",
+    "applicationCategory": "SecurityApplication",
     "operatingSystem": "Any",
-    "browserRequirements": "Requires a modern browser with Web Crypto API support",
+    "browserRequirements": "Requires a modern browser supporting Web Crypto API (crypto.getRandomValues)",
+    "author": {
+      "@type": "Person",
+      "name": "Sreehari Pradeep"
+    },
     "offers": { "@type": "Offer", "price": "0" }
   }
   </script>
+
+  <!-- JSON-LD Structured Data: TechArticle -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Understanding Modulo Mapping Bias, Rejection Sampling, and Secure Password Security in Cybersecurity",
+    "description": "A comprehensive cybersecurity analysis on how modulo mapping bias introduces subtle non-uniform character distribution in secure password generators and how rejection sampling completely restores uniform entropy.",
+    "url": "https://letmecopyit.github.io/password-randomness-lab/",
+    "inLanguage": "en",
+    "author": {
+      "@type": "Person",
+      "name": "Sreehari Pradeep"
+    },
+    "dependencies": "Web Crypto API (CSPRNG)"
+  }
+  </script>
+
+  <!-- JSON-LD Structured Data: FAQPage -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,26 +72,34 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What is modulo bias in random number generation?",
+        "name": "What is modulo mapping bias in secure password generation?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Modulo bias occurs when the range of a random number source (e.g., 0–255 for a single byte) is not evenly divisible by the number of possible outputs (e.g., a character pool of 7). Using the modulo operator to map random bytes to characters causes some characters to appear slightly more often than others."
+          "text": "Modulo mapping bias occurs when random byte outputs (e.g., 0 to 255 from a CSPRNG) are mapped to a character pool using the modulo operator (%) when the byte range size is not evenly divisible by the pool size. This causes lower-indexed characters in the pool to have a higher probability of selection, compromising the uniformity required for a truly secure password in cybersecurity."
         }
       },
       {
         "@type": "Question",
-        "name": "How does rejection sampling eliminate modulo bias?",
+        "name": "How do rejection sampling and modulo mapping differ in random character generation?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Rejection sampling discards random values that fall outside the largest range evenly divisible by the pool size. For example, with a pool of 7 characters, only byte values 0–251 are used (252 ÷ 7 = 36 per character). Values 252–255 are rejected and a new random byte is drawn, ensuring every character has an exactly equal probability of selection."
+          "text": "Modulo mapping takes every random number generated and computes randomByte % poolSize, distributing remainders unequally. Rejection sampling discards leftover random byte values that exceed the largest multiple of poolSize, drawing a new random byte until a perfectly uniform value is obtained, guaranteeing equal probability for every character."
         }
       },
       {
         "@type": "Question",
-        "name": "Can you tell if a password has modulo bias by looking at it?",
+        "name": "Why is rejection sampling critical for a secure password in cybersecurity?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. Individual passwords generated with modulo bias look indistinguishable from passwords generated with rejection sampling. The bias only becomes apparent through statistical analysis over a large number of samples."
+          "text": "In cybersecurity, password strength relies on maximum entropy. Modulo mapping bias subtly skews character probability distributions, reducing theoretical entropy and allowing targeted cracking dictionaries to prioritize biased characters. Rejection sampling ensures exact uniform distribution, preserving full security."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you visually detect modulo mapping bias in a generated secure password?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Single passwords generated with modulo mapping look identical to those created with rejection sampling. Modulo mapping bias can only be identified statistically by testing distributions across millions of samples."
         }
       }
     ]
@@ -67,330 +108,439 @@
 </head>
 <body>
 
-  <!-- ============================================
-       SECTION 1: HERO
-       ============================================ -->
-  <section id="hero" class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-glow"></div>
-    <div class="container hero-content">
-      <h1>Can You Spot Biased Randomness?</h1>
-      <p class="hero-subtitle">An interactive experiment showing why random-looking passwords are not always generated equally.</p>
-      <p class="hero-desc">Two character generators can both produce strings that <em>look</em> random. But one may give certain characters a slightly higher probability than others.</p>
-      <p class="hero-cta-text">Run the experiment and see what happens.</p>
-      <a href="#pool" class="btn btn-primary btn-lg" id="start-experiment-btn">Start Experiment ↓</a>
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="container header-content">
+      <a href="https://letmecopyit.github.io/password-randomness-lab/" class="logo">
+        <span class="logo-icon">🛡️</span>
+        <span class="logo-text">Cybersecurity Lab: Modulo Mapping Bias & Rejection Sampling</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="#pool">Character Pool</a>
+        <a href="#methods">Methods</a>
+        <a href="#experiment">Simulation</a>
+        <a href="#challenge">Trust Challenge</a>
+        <a href="#guide">Cybersecurity Guide</a>
+        <a href="#faq">FAQ</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <!-- ============================================
-       SECTION 2: CHARACTER POOL
-       ============================================ -->
-  <section id="pool" class="section pool-section">
-    <div class="container">
-      <span class="section-label">Step 1</span>
-      <h2>Choose a Character Pool</h2>
-      <p class="section-desc">Select how many characters your password generator is allowed to choose from.</p>
-
-      <!-- Simple Explainer Box -->
-      <div class="simple-explainer">
-        <div class="explainer-header">
-          <span class="explainer-icon">💡</span>
-          <strong>In Simple Terms: How Computers Pick Random Characters</strong>
-        </div>
-        <p>Computers generate randomness as numbers from <strong>0 to 255</strong> (256 possible values in 1 byte). To pick a character for your password, the program has to split those 256 numbers among all the letters in your character pool.</p>
+  <main>
+    <!-- ============================================
+         SECTION 1: HERO (H1 Title)
+         ============================================ -->
+    <section id="hero" class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-glow"></div>
+      <div class="container hero-content">
+        <h1>Modulo Mapping Bias & Rejection Sampling for Secure Passwords in Cybersecurity</h1>
+        <p class="hero-subtitle">An interactive cybersecurity experiment showing why random-looking passwords are not always generated with uniform probability.</p>
+        <p class="hero-desc">Even when using a cryptographically secure pseudorandom number generator (CSPRNG), naive <strong>modulo mapping</strong> introduces <strong>modulo mapping bias</strong>. Learn how <strong>rejection sampling and modulo mapping</strong> differ, and why rejection sampling is mandatory for every <strong>secure password</strong> in <strong>cybersecurity</strong>.</p>
+        <p class="hero-cta-text">Run the interactive CSPRNG simulation and analyze statistical probability distributions live.</p>
+        <a href="#pool" class="btn btn-primary btn-lg" id="start-experiment-btn">Start Experiment ↓</a>
       </div>
+    </section>
 
-      <div class="pool-presets" id="pool-presets">
-        <button class="btn btn-preset active" data-pool="ABCDEFG" id="preset-7">7 Letters</button>
-        <button class="btn btn-preset" data-pool="0123456789" id="preset-10">10 Digits</button>
-        <button class="btn btn-preset" data-pool="abcdefghijklmnopqrstuvwxyz" id="preset-26">26 Lowercase</button>
-        <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" id="preset-52">52 Mixed Case</button>
-        <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" id="preset-62">62 Alphanumeric</button>
-        <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%*-_+=.?" id="preset-71">71 Password Set</button>
-      </div>
+    <!-- ============================================
+         SECTION 2: CHARACTER POOL (H2 Title)
+         ============================================ -->
+    <section id="pool" class="section pool-section">
+      <div class="container">
+        <span class="section-label">Step 1</span>
+        <h2>Select a Character Pool to Analyze Modulo Mapping Bias</h2>
+        <p class="section-desc">Select how many characters your password generator is allowed to choose from to observe remainder distribution math.</p>
 
-      <div class="custom-pool-container">
-        <label for="custom-pool-input">Custom pool:</label>
-        <input type="text" id="custom-pool-input" placeholder="Type unique characters…" autocomplete="off" spellcheck="false">
-      </div>
-
-      <div class="card pool-info" id="pool-info">
-        <div class="pool-display">
-          <span class="label">Character Pool:</span>
-          <span class="value mono" id="pool-chars">A B C D E F G</span>
-        </div>
-        <div class="pool-stats">
-          <div class="stat">
-            <span class="label">Pool size</span>
-            <span class="value" id="pool-size">7</span>
+        <!-- Simple Explainer Box -->
+        <div class="simple-explainer">
+          <div class="explainer-header">
+            <span class="explainer-icon">💡</span>
+            <strong>In Simple Terms: How Computers Pick Characters for a Secure Password</strong>
           </div>
-          <div class="stat">
-            <span class="label">Random byte range</span>
-            <span class="value">0 – 255</span>
-          </div>
-        </div>
-        <div class="pool-math" id="pool-math">
-          <div class="math-line" id="math-division">256 ÷ 7 = 36 remainder <strong class="text-yellow">4</strong></div>
-          <div class="math-result text-yellow" id="bias-warning">⚠ 4 characters receive an extra byte mapping — bias is unavoidable with modulo.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       SECTION 3: TWO METHODS
-       ============================================ -->
-  <section id="methods" class="section methods-section">
-    <div class="container">
-      <span class="section-label">Step 2</span>
-      <h2>Two Methods of Character Selection</h2>
-      <p class="section-desc">Both methods use secure random numbers. The difference is how those numbers are assigned to characters.</p>
-
-      <div class="methods-grid">
-        <!-- Method A: Modulo -->
-        <div class="method-card method-biased">
-          <div class="method-header">
-            <span class="method-badge badge-biased">Method A</span>
-            <h3>Modulo Mapping</h3>
-          </div>
-          <div class="code-block"><code>randomByte % poolSize</code></div>
-          <p>Takes the remainder after division. <span class="text-yellow">Fast, but creates unfair probabilities.</span></p>
-
-          <div class="analogy-box analogy-biased">
-            <strong>🎟️ Simple Analogy:</strong>
-            <p>Imagine handing out 256 raffle tickets to 7 people. 4 people get 37 tickets, while 3 people only get 36 tickets. The first 4 people have a higher chance of winning!</p>
-          </div>
-
-          <div class="mapping-table" id="modulo-mapping-table"></div>
-          <div class="method-verdict verdict-biased">
-            <span class="verdict-icon">⚠</span>
-            <span id="modulo-verdict-text">Unequal probability</span>
-          </div>
+          <p>Computers produce randomness as raw bytes from <strong>0 to 255</strong> (256 possible values). To generate a secure password, the system maps those 256 numbers onto your character pool. Without rejection sampling, modulo mapping splits the numbers unequally, causing <strong>modulo mapping bias</strong>.</p>
         </div>
 
-        <!-- Method B: Rejection -->
-        <div class="method-card method-unbiased">
-          <div class="method-header">
-            <span class="method-badge badge-unbiased">Method B</span>
-            <h3>Rejection Sampling</h3>
-          </div>
-          <p>Discards leftover numbers outside the even range and draws a new random number.</p>
+        <div class="pool-presets" id="pool-presets">
+          <button class="btn btn-preset active" data-pool="ABCDEFG" id="preset-7">7 Letters</button>
+          <button class="btn btn-preset" data-pool="0123456789" id="preset-10">10 Digits</button>
+          <button class="btn btn-preset" data-pool="abcdefghijklmnopqrstuvwxyz" id="preset-26">26 Lowercase</button>
+          <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" id="preset-52">52 Mixed Case</button>
+          <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" id="preset-62">62 Alphanumeric</button>
+          <button class="btn btn-preset" data-pool="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%*-_+=.?" id="preset-71">71 Password Set</button>
+        </div>
 
-          <div class="analogy-box analogy-unbiased">
-            <strong>🎟️ Simple Analogy:</strong>
-            <p>Throw away the 4 leftover raffle tickets so everyone gets exactly 36 tickets. Now every single person has an identical 100% fair chance!</p>
-          </div>
+        <div class="custom-pool-container">
+          <label for="custom-pool-input">Custom pool:</label>
+          <input type="text" id="custom-pool-input" placeholder="Type unique characters…" autocomplete="off" spellcheck="false">
+        </div>
 
-          <div class="mapping-table" id="rejection-mapping-table"></div>
-          <div class="method-verdict verdict-unbiased">
-            <span class="verdict-icon">✓</span>
-            <span>Equal probability</span>
+        <div class="card pool-info" id="pool-info">
+          <div class="pool-display">
+            <span class="label">Character Pool:</span>
+            <span class="value mono" id="pool-chars">A B C D E F G</span>
+          </div>
+          <div class="pool-stats">
+            <div class="stat">
+              <span class="label">Pool size</span>
+              <span class="value" id="pool-size">7</span>
+            </div>
+            <div class="stat">
+              <span class="label">Random byte range</span>
+              <span class="value">0 – 255</span>
+            </div>
+          </div>
+          <div class="pool-math" id="pool-math">
+            <div class="math-line" id="math-division">256 ÷ 7 = 36 remainder <strong class="text-yellow">4</strong></div>
+            <div class="math-result text-yellow" id="bias-warning">⚠ 4 characters receive an extra byte mapping — modulo mapping bias is unavoidable with standard modulo arithmetic.</div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============================================
-       SECTION 4: RUN THE EXPERIMENT
-       ============================================ -->
-  <section id="experiment" class="section experiment-section">
-    <div class="container">
-      <span class="section-label">Step 3</span>
-      <h2>Run the Experiment & Compare Distributions</h2>
-      <p class="section-desc">Analyze distributions via live CSPRNG simulation or exact mathematical expectation.</p>
+    <!-- ============================================
+         SECTION 3: TWO METHODS (H2 Title & H3 Cards)
+         ============================================ -->
+    <section id="methods" class="section methods-section">
+      <div class="container">
+        <span class="section-label">Step 2</span>
+        <h2>Comparing Rejection Sampling and Modulo Mapping Methods</h2>
+        <p class="section-desc">Both methods source cryptographically secure random bytes. The difference lies in how those bytes are mapped to characters in a secure password generator.</p>
 
-      <!-- Mode Selector & Share Controls -->
-      <div class="experiment-toolbar">
-        <div class="mode-toggle-group">
-          <span class="toolbar-label">Mode:</span>
-          <div class="btn-group" id="mode-buttons">
-            <button class="btn btn-preset active" data-mode="simulation" id="mode-simulation">🎲 Live Simulation</button>
-            <button class="btn btn-preset" data-mode="theoretical" id="mode-theoretical">📐 Mathematical Expectation</button>
+        <div class="methods-grid">
+          <!-- Method A: Modulo -->
+          <div class="method-card method-biased">
+            <div class="method-header">
+              <span class="method-badge badge-biased">Method A</span>
+              <h3>Method A: Modulo Mapping (Fast but Introduces Modulo Mapping Bias)</h3>
+            </div>
+            <div class="code-block"><code>randomByte % poolSize</code></div>
+            <p>Takes the remainder after integer division. <span class="text-yellow">Creates unfair probabilities and introduces modulo mapping bias.</span></p>
+
+            <div class="analogy-box analogy-biased">
+              <strong>🎟️ Cybersecurity Analogy:</strong>
+              <p>Imagine handing out 256 raffle tickets to 7 people. 4 people get 37 tickets, while 3 people only get 36. The first 4 people have a higher probability of winning, creating statistical bias!</p>
+            </div>
+
+            <div class="mapping-table" id="modulo-mapping-table"></div>
+            <div class="method-verdict verdict-biased">
+              <span class="verdict-icon">⚠</span>
+              <span id="modulo-verdict-text">Unequal probability (Modulo Mapping Bias)</span>
+            </div>
           </div>
-        </div>
 
-        <div class="sample-controls" id="simulation-controls">
-          <span class="toolbar-label">Samples:</span>
-          <div class="sample-buttons" id="sample-buttons">
-            <button class="btn btn-preset" data-count="1000" id="sample-1k">1,000</button>
-            <button class="btn btn-preset active" data-count="10000" id="sample-10k">10,000</button>
-            <button class="btn btn-preset" data-count="100000" id="sample-100k">100,000</button>
-            <button class="btn btn-preset" data-count="1000000" id="sample-1m">1,000,000</button>
-          </div>
-        </div>
+          <!-- Method B: Rejection -->
+          <div class="method-card method-unbiased">
+            <div class="method-header">
+              <span class="method-badge badge-unbiased">Method B</span>
+              <h3>Method B: Rejection Sampling (Eliminates Bias for a Secure Password)</h3>
+            </div>
+            <div class="code-block"><code>if (randomByte &lt; limit) return randomByte % poolSize</code></div>
+            <p>Discards leftover numbers outside the uniform range and requests a fresh random byte from the CSPRNG.</p>
 
-        <button class="btn btn-secondary btn-sm share-btn" id="share-link-btn" title="Copy shareable link for this exact experiment configuration">
-          <span id="share-btn-text">🔗 Copy Share Link</span>
-        </button>
-      </div>
+            <div class="analogy-box analogy-unbiased">
+              <strong>🎟️ Cybersecurity Analogy:</strong>
+              <p>Discard the 4 leftover raffle tickets so everyone gets exactly 36 tickets. Now every character has a 100% fair and uniform probability, ensuring true cryptographic security.</p>
+            </div>
 
-      <button class="btn btn-primary btn-lg" id="run-experiment-btn">
-        <span id="run-btn-text">▶ Generate Distribution</span>
-      </button>
-
-      <div class="progress-container" id="progress-container" hidden>
-        <div class="progress-bar" id="progress-bar"></div>
-        <span class="progress-text" id="progress-text">Generating…</span>
-      </div>
-
-      <!-- Results Grid -->
-      <div class="results-grid" id="results-grid" hidden>
-        <!-- Modulo Results -->
-        <div class="result-card">
-          <div class="result-card-header">
-            <h3><span class="method-badge badge-biased">A</span> Modulo Mapping Distribution</h3>
-            <span class="badge-status badge-status-biased" id="modulo-status-badge">Statistically Biased</span>
-          </div>
-          <div class="target-probability" id="modulo-target-prob">Expected Target: 14.2857%</div>
-          <div class="chart-container" id="modulo-chart"></div>
-          <div class="stats-summary" id="modulo-stats"></div>
-        </div>
-
-        <!-- Rejection Results -->
-        <div class="result-card">
-          <div class="result-card-header">
-            <h3><span class="method-badge badge-unbiased">B</span> Rejection Sampling Distribution</h3>
-            <span class="badge-status badge-status-unbiased" id="rejection-status-badge">Statistically Unbiased</span>
-          </div>
-          <div class="target-probability" id="rejection-target-prob">Expected Target: 14.2857%</div>
-          <div class="chart-container" id="rejection-chart"></div>
-          <div class="stats-summary" id="rejection-stats"></div>
-        </div>
-      </div>
-
-      <!-- Mathematical Reason Card -->
-      <div class="math-reason-card" id="math-reason-card" hidden>
-        <div class="math-reason-header">
-          <span class="math-reason-icon">📐</span>
-          <div>
-            <h3>The Mathematical Reason for Modulo Bias</h3>
-            <p class="math-reason-sub">Distinguishing algorithmic bias from natural random sampling noise</p>
-          </div>
-        </div>
-        <div class="math-reason-body" id="math-reason-body"></div>
-      </div>
-
-      <!-- Comprehensive Terms & Results Explainer -->
-      <div class="terms-explainer-card" id="terms-explainer-card" hidden>
-        <div class="terms-header">
-          <span class="terms-icon">📖</span>
-          <h3>Understanding Your Results in Simple Terms</h3>
-        </div>
-        <div class="terms-grid">
-          <div class="term-item">
-            <span class="term-title">📊 Chi-Squared (χ²) Statistic</span>
-            <p>Chi-squared (χ²) measures how far the observed distribution differs from the expected distribution. Larger values indicate a larger deviation, although the sample size must also be considered when interpreting the result.</p>
-          </div>
-          <div class="term-item">
-            <span class="term-title">🎯 Expected %</span>
-            <p>The exact theoretical target percentage ($100\% \div \text{pool size}$) each character would receive in a perfectly uniform distribution.</p>
-          </div>
-          <div class="term-item">
-            <span class="term-title">📈 Max Deviation</span>
-            <p>The single largest difference between a character's actual percentage and its expected fair target percentage.</p>
-          </div>
-          <div class="term-item">
-            <span class="term-title">🎨 Bar Colors & Legend</span>
-            <div class="legend-pills">
-              <span class="pill pill-gold">🟡 Gold: Picked TOO OFTEN (Received extra byte mappings)</span>
-              <span class="pill pill-red">🔴 Red: Picked TOO RARELY (Received fewer byte mappings)</span>
-              <span class="pill pill-green">🟢 Green: Picked with FAIR, uniform probability</span>
+            <div class="mapping-table" id="rejection-mapping-table"></div>
+            <div class="method-verdict verdict-unbiased">
+              <span class="verdict-icon">✓</span>
+              <span>Equal probability (Rejection Sampling Guaranteed)</span>
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-    </div>
-  </section>
+    <!-- ============================================
+         SECTION 4: RUN THE EXPERIMENT (H2 Title & H3 Cards)
+         ============================================ -->
+    <section id="experiment" class="section experiment-section">
+      <div class="container">
+        <span class="section-label">Step 3</span>
+        <h2>Simulate Modulo Mapping Bias vs Rejection Sampling Distributions</h2>
+        <p class="section-desc">Analyze distribution uniformity via browser Web Crypto API (CSPRNG) live simulation or exact mathematical expectation.</p>
 
-  <!-- ============================================
-       SECTION 5: TRUST CHALLENGE
-       ============================================ -->
-  <section id="challenge" class="section challenge-section">
-    <div class="container">
-      <span class="section-label">Step 4</span>
-      <h2>Which Generator Would You Trust?</h2>
-      <p class="section-desc">Both generators below create passwords using secure random numbers. One generator uses biased Modulo Mapping, while the other uses unbiased Rejection Sampling.</p>
+        <!-- Mode Selector & Share Controls -->
+        <div class="experiment-toolbar">
+          <div class="mode-toggle-group">
+            <span class="toolbar-label">Mode:</span>
+            <div class="btn-group" id="mode-buttons">
+              <button class="btn btn-preset active" data-mode="simulation" id="mode-simulation">🎲 Live Simulation</button>
+              <button class="btn btn-preset" data-mode="theoretical" id="mode-theoretical">📐 Mathematical Expectation</button>
+            </div>
+          </div>
 
-      <div class="generators-grid" id="generators-grid">
-        <div class="generator-card">
-          <h3 id="gen-a-label">Generator A</h3>
-          <div class="generator-password" id="gen-a-password"></div>
-          <button class="btn" id="gen-a-regen">Regenerate</button>
+          <div class="sample-controls" id="simulation-controls">
+            <span class="toolbar-label">Samples:</span>
+            <div class="sample-buttons" id="sample-buttons">
+              <button class="btn btn-preset" data-count="1000" id="sample-1k">1,000</button>
+              <button class="btn btn-preset active" data-count="10000" id="sample-10k">10,000</button>
+              <button class="btn btn-preset" data-count="100000" id="sample-100k">100,000</button>
+              <button class="btn btn-preset" data-count="1000000" id="sample-1m">1,000,000</button>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary btn-sm share-btn" id="share-link-btn" title="Copy shareable link for this exact experiment configuration">
+            <span id="share-btn-text">🔗 Copy Share Link</span>
+          </button>
         </div>
-        <div class="generator-card">
-          <h3 id="gen-b-label">Generator B</h3>
-          <div class="generator-password" id="gen-b-password"></div>
-          <button class="btn" id="gen-b-regen">Regenerate</button>
+
+        <button class="btn btn-primary btn-lg" id="run-experiment-btn">
+          <span id="run-btn-text">▶ Generate Distribution</span>
+        </button>
+
+        <div class="progress-container" id="progress-container" hidden>
+          <div class="progress-bar" id="progress-bar"></div>
+          <span class="progress-text" id="progress-text">Generating…</span>
+        </div>
+
+        <!-- Results Grid -->
+        <div class="results-grid" id="results-grid" hidden>
+          <!-- Modulo Results -->
+          <div class="result-card">
+            <div class="result-card-header">
+              <h3><span class="method-badge badge-biased">A</span> Modulo Mapping Distribution Results</h3>
+              <span class="badge-status badge-status-biased" id="modulo-status-badge">Statistically Biased</span>
+            </div>
+            <div class="target-probability" id="modulo-target-prob">Expected Target: 14.2857%</div>
+            <div class="chart-container" id="modulo-chart"></div>
+            <div class="stats-summary" id="modulo-stats"></div>
+          </div>
+
+          <!-- Rejection Results -->
+          <div class="result-card">
+            <div class="result-card-header">
+              <h3><span class="method-badge badge-unbiased">B</span> Rejection Sampling Distribution Results</h3>
+              <span class="badge-status badge-status-unbiased" id="rejection-status-badge">Statistically Unbiased</span>
+            </div>
+            <div class="target-probability" id="rejection-target-prob">Expected Target: 14.2857%</div>
+            <div class="chart-container" id="rejection-chart"></div>
+            <div class="stats-summary" id="rejection-stats"></div>
+          </div>
+        </div>
+
+        <!-- Mathematical Reason Card -->
+        <div class="math-reason-card" id="math-reason-card" hidden>
+          <div class="math-reason-header">
+            <span class="math-reason-icon">📐</span>
+            <div>
+              <h3>Mathematical Analysis of Modulo Mapping Bias in Cybersecurity</h3>
+              <p class="math-reason-sub">Distinguishing algorithmic bias from natural random sampling noise in secure password generators</p>
+            </div>
+          </div>
+          <div class="math-reason-body" id="math-reason-body"></div>
+        </div>
+
+        <!-- Comprehensive Terms & Results Explainer -->
+        <div class="terms-explainer-card" id="terms-explainer-card" hidden>
+          <div class="terms-header">
+            <span class="terms-icon">📖</span>
+            <h3>Key Statistical Metrics for Evaluating Secure Password Entropy</h3>
+          </div>
+          <div class="terms-grid">
+            <div class="term-item">
+              <span class="term-title">📊 Chi-Squared (χ²) Statistic</span>
+              <p>Chi-squared (χ²) measures how far the observed distribution differs from the expected uniform distribution. Higher χ² values confirm significant <strong>modulo mapping bias</strong>.</p>
+            </div>
+            <div class="term-item">
+              <span class="term-title">🎯 Expected %</span>
+              <p>The exact theoretical target percentage ($100\% \div \text{pool size}$) each character would receive in a perfectly uniform secure password generator.</p>
+            </div>
+            <div class="term-item">
+              <span class="term-title">📈 Max Deviation</span>
+              <p>The single largest difference between a character's actual probability and its fair target probability due to modulo mapping bias.</p>
+            </div>
+            <div class="term-item">
+              <span class="term-title">🎨 Bar Colors & Legend</span>
+              <div class="legend-pills">
+                <span class="pill pill-gold">🟡 Gold: Picked TOO OFTEN (Received extra byte mappings)</span>
+                <span class="pill pill-red">🔴 Red: Picked TOO RARELY (Received fewer byte mappings)</span>
+                <span class="pill pill-green">🟢 Green: Picked with FAIR, uniform rejection sampling probability</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================
+         SECTION 5: TRUST CHALLENGE (H2 Title & H3 Cards)
+         ============================================ -->
+    <section id="challenge" class="section challenge-section">
+      <div class="container">
+        <span class="section-label">Step 4</span>
+        <h2>Cybersecurity Trust Challenge – Detecting Modulo Mapping Bias in Passwords</h2>
+        <p class="section-desc">Both password generators below use Web Crypto CSPRNG bytes. One generator uses biased Modulo Mapping, while the other relies on unbiased Rejection Sampling to generate a secure password.</p>
+
+        <div class="generators-grid" id="generators-grid">
+          <div class="generator-card">
+            <h3 id="gen-a-label">Generator A: Output Sample</h3>
+            <div class="generator-password" id="gen-a-password"></div>
+            <button class="btn" id="gen-a-regen">Regenerate</button>
+          </div>
+          <div class="generator-card">
+            <h3 id="gen-b-label">Generator B: Output Sample</h3>
+            <div class="generator-password" id="gen-b-password"></div>
+            <button class="btn" id="gen-b-regen">Regenerate</button>
+          </div>
+        </div>
+
+        <p class="challenge-question">Can you identify which generator contains statistical modulo mapping bias just by inspecting the generated output?</p>
+
+        <button class="btn btn-primary" id="reveal-answer-btn">Reveal Answer</button>
+
+        <div class="reveal-container" id="reveal-container">
+          <div class="reveal-card">
+            <p><strong>Answer: You cannot spot modulo mapping bias by visual inspection alone!</strong></p>
+            <p>A generated string can look completely random even when the underlying code favors specific characters by up to 0.4% or more. Human visual inspection cannot spot mathematical modulo mapping bias in a single string.</p>
+            <p>Only large-scale statistical testing reveals the skew. In modern <strong>cybersecurity</strong>, every <strong>secure password</strong> implementation must employ <strong>rejection sampling and modulo mapping</strong> controls to ensure mathematical uniformity.</p>
+            <p><strong>Cryptographic security relies on mathematics, not visual randomness.</strong></p>
+          </div>
         </div>
       </div>
+    </section>
 
-      <p class="challenge-question">Can you tell which one has statistical bias just by reading them?</p>
+    <!-- ============================================
+         SECTION 6: WHY THIS MATTERS (H2 Title & H3 Subtitles)
+         ============================================ -->
+    <section id="why-it-matters" class="section why-section">
+      <div class="container">
+        <span class="section-label">Why Rejection Sampling and Modulo Mapping Matter</span>
+        <h2>Why Secure Password Generation Requires Rejection Sampling in Cybersecurity</h2>
 
-      <button class="btn btn-primary" id="reveal-answer-btn">Reveal Answer</button>
-
-      <div class="reveal-container" id="reveal-container">
-        <div class="reveal-card">
-          <p><strong>Answer: You cannot tell by looking at individual passwords!</strong></p>
-          <p>A password can <em>look</em> completely random even when the underlying process gives certain letters a 0.4% higher chance of selection. Human eyes cannot spot mathematical bias in a short string.</p>
-          <p>Only statistical testing across tens of thousands of samples reveals the flaw. That is why proper cryptographic implementation matters so much!</p>
-          <p><strong>Security relies on math, not appearance.</strong></p>
+        <div class="why-content">
+          <h3 class="why-subtitle">The Role of Uniform Distribution in Secure Password Cryptography</h3>
+          <p>A password string can appear complex while still failing cryptographic uniformity standards. Building a <strong>secure password</strong> in <strong>cybersecurity</strong> demands both an unguessable <strong>source of entropy</strong> (such as <code>crypto.getRandomValues()</code>) and an unbiased <strong>mapping algorithm</strong> (such as <strong>rejection sampling</strong>).</p>
+          
+          <h3 class="why-subtitle">How Modulo Mapping Bias Weakens Password Security in Cybersecurity</h3>
+          <p>When software developers use raw modulo mapping (e.g. <code>byte % poolSize</code>), lower-indexed characters receive more byte mappings whenever 256 is not evenly divisible by the pool size. Attackers using probabilistic dictionary attacks or GPU brute-force engines can exploit this non-uniform frequency to reduce the effective key search space.</p>
+          <p>MacroToolkit's Password Generator strictly enforces rejection sampling to eliminate <strong>modulo mapping bias</strong> entirely, safeguarding cryptographic strength across all character sets.</p>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ============================================
-       SECTION 6: WHY THIS MATTERS
-       ============================================ -->
-  <section id="why-it-matters" class="section why-section">
-    <div class="container">
-      <span class="section-label">Why This Matters</span>
-      <h2>Secure Password Generation</h2>
-
-      <div class="why-content">
-        <p>A password can look completely random even when the underlying character-selection process is slightly biased. Secure password generation depends on both the <strong>source of randomness</strong> and <strong>how those random values are mapped</strong> to the available character set.</p>
-        <p>MacroToolkit's Password Generator uses browser-based cryptographically secure randomness and rejection sampling to avoid modulo bias when selecting characters.</p>
-      </div>
-
-      <a href="https://www.macrotoolkit.com/generator/password-generator" target="_blank" rel="noopener" class="cta-card" id="macrotoolkit-cta">
-        <span class="cta-arrow">→</span>
-        <div class="cta-label">Try the implementation</div>
-        <div class="cta-title">MacroToolkit Password Generator</div>
-      </a>
-    </div>
-  </section>
-
-  <!-- ============================================
-       SECTION 7: FURTHER READING
-       ============================================ -->
-  <section id="further-reading" class="section reading-section">
-    <div class="container">
-      <span class="section-label">Learn More</span>
-      <h2>Further Technical Reading</h2>
-
-      <div class="reading-cards">
-        <a href="https://www.macrotoolkit.com/blog/cryptographically-secure-random-numbers" target="_blank" rel="noopener" class="reading-card" id="reading-csprng">
-          <div class="reading-icon">📖</div>
-          <div class="reading-title">Cryptographically Secure Random Numbers</div>
-          <div class="reading-desc">Understanding why crypto.getRandomValues() matters and how it differs from Math.random().</div>
+        <a href="https://www.macrotoolkit.com/generator/password-generator" target="_blank" rel="noopener" class="cta-card" id="macrotoolkit-cta">
+          <span class="cta-arrow">→</span>
+          <div class="cta-label">Try the zero-bias implementation</div>
+          <div class="cta-title">MacroToolkit Secure Password Generator</div>
         </a>
-        <a href="https://www.macrotoolkit.com/utilities/password-entropy-calculator" target="_blank" rel="noopener" class="reading-card" id="reading-entropy">
-          <div class="reading-icon">📖</div>
-          <div class="reading-title">Password Entropy Calculator</div>
-          <div class="reading-desc">Calculate the exact mathematical bits of entropy for any character set and length combination.</div>
-        </a>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- ============================================
+         SECTION 7: DEEP DIVE GUIDE (H2, H3, H4, H5, H6 Hierarchy)
+         ============================================ -->
+    <section id="guide" class="section guide-section">
+      <div class="container">
+        <span class="section-label">Cybersecurity Deep Dive</span>
+        <h2>Comprehensive Technical Guide: Rejection Sampling and Modulo Mapping Bias</h2>
+        <p class="section-desc">An in-depth cryptographic explanation of how modulo mapping bias occurs and how rejection sampling and modulo mapping techniques guarantee uniform distribution for secure passwords.</p>
+
+        <article class="guide-article card">
+          <div class="guide-block">
+            <h3>Deep Dive into Byte-Level Modulo Mapping Bias</h3>
+            <p>Understanding <strong>modulo mapping bias</strong> requires analyzing how computers process pseudorandom byte streams provided by operating system entropy pools.</p>
+
+            <h4>Cryptographic Pseudorandom Number Generation (CSPRNG) Mechanics</h4>
+            <p>Modern web applications rely on CSPRNGs like <code>window.crypto.getRandomValues()</code>. These functions output uniformly distributed 8-bit unsigned integers ranging from 0 to 255 (256 distinct values).</p>
+
+            <h5>Byte Range Allocation and Remainder Imbalance</h5>
+            <p>When selecting from a pool of size N (for example, a 7-character pool <code>ABCDEFG</code>), standard <strong>modulo mapping</strong> computes <code>byte % 7</code>. Because 256 is not a multiple of 7 (256 = 36 × 7 + 4), the 256 byte outcomes are split as follows:</p>
+            
+            <h6>Mathematical Proof of Modulo Mapping Bias Calculation</h6>
+            <div class="mono-box">
+              Characters indexed 0 to 3 ('A', 'B', 'C', 'D'): 37 byte mappings each &rarr; Probability = 37 / 256 &approx; 14.4531%<br>
+              Characters indexed 4 to 6 ('E', 'F', 'G'): 36 byte mappings each &rarr; Probability = 36 / 256 &approx; 14.0625%
+            </div>
+            <p>This 0.3906% probability gap is the exact mathematical definition of <strong>modulo mapping bias</strong>.</p>
+          </div>
+
+          <div class="guide-block">
+            <h3>Implementing Rejection Sampling in Modern Cybersecurity Systems</h3>
+            <p>To eliminate modulo mapping bias, <strong>cybersecurity</strong> engineers utilize <strong>rejection sampling</strong> alongside mapping arithmetic.</p>
+
+            <h4>Algorithmic Flow of Rejection Sampling</h4>
+            <p>Rejection sampling establishes a maximum valid threshold (Limit = floor(256 / N) × N). Any byte drawn above or equal to this limit is discarded, and a new byte is generated from the CSPRNG.</p>
+
+            <h5>Performance Overhead and Retry Probabilities</h5>
+            <p>Because the rejected range (at most N - 1 values out of 256) is tiny, the probability of needing a second byte draw is minimal. For a 7-character pool, only 4 values (252–255) are rejected (4 / 256 = 1.5625%).</p>
+
+            <h6>Optimal Upper Bound Truncation for Zero-Bias Character Mapping</h6>
+            <p>By discarding the top 4 biased values, all remaining 252 values map into 7 buckets with exactly 36 byte values per bucket (252 / 7 = 36). This guarantees every character in a <strong>secure password</strong> is chosen with an exact, uncompromised 1/7 &approx; 14.2857% uniform probability.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================
+         SECTION 8: FAQ SECTION (H2 & H3 Questions)
+         ============================================ -->
+    <section id="faq" class="section faq-section">
+      <div class="container">
+        <span class="section-label">Frequently Asked Questions</span>
+        <h2>Frequently Asked Questions (FAQ) on Modulo Mapping Bias & Cybersecurity</h2>
+        <p class="section-desc">Clear answers to common questions about rejection sampling and modulo mapping in secure password generators.</p>
+
+        <div class="faq-grid">
+          <div class="faq-card card">
+            <h3>What is modulo mapping bias in secure password generation?</h3>
+            <p><strong>Modulo mapping bias</strong> is a statistical flaw that occurs when a random number range is mapped to a character pool using the modulo operator (<code>%</code>) without handling remainders. If the total random range is not evenly divisible by the pool size, the first few characters receive extra mapping slots, making them slightly more likely to be selected in your password.</p>
+          </div>
+
+          <div class="faq-card card">
+            <h3>How do rejection sampling and modulo mapping differ in random number generation?</h3>
+            <p><strong>Modulo mapping</strong> forces every random byte into the pool using modulo division, which causes unfair weighting when there is a remainder. <strong>Rejection sampling</strong> discards the leftover random values that cause imbalance and draws a new random number, guaranteeing 100% uniform selection probability across all characters.</p>
+          </div>
+
+          <div class="faq-card card">
+            <h3>Why is rejection sampling necessary for a secure password in cybersecurity?</h3>
+            <p>In <strong>cybersecurity</strong>, cryptographic security relies on maximum password entropy. Skewed probability distributions caused by modulo mapping bias reduce entropy. Attackers who understand how a target password generator was coded can optimize brute-force attempts toward higher-probability characters. Rejection sampling prevents this attack vector entirely.</p>
+          </div>
+
+          <div class="faq-card card">
+            <h3>Does modulo mapping bias make passwords easier for hackers to crack?</h3>
+            <p>While a 0.4% bias may seem small, in large-scale automated cracking operations or GPU-accelerated hash attacks, biased character distributions noticeably shrink the search space. Removing modulo mapping bias ensures passwords reach their full mathematical strength.</p>
+          </div>
+
+          <div class="faq-card card">
+            <h3>How can cybersecurity developers prevent modulo mapping bias in code?</h3>
+            <p>Developers should avoid using simple <code>Math.random() % length</code> or naive CSPRNG modulo calls. Instead, use established cryptographic libraries or implement a rejection sampling loop that truncates the random range to the largest multiple of the character pool length before taking the modulo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         SECTION 9: FURTHER READING (H2 & H3 Cards)
+         ============================================ -->
+    <section id="further-reading" class="section reading-section">
+      <div class="container">
+        <span class="section-label">Learn More</span>
+        <h2>Cybersecurity & Password Entropy Resources</h2>
+
+        <div class="reading-cards">
+          <a href="https://www.macrotoolkit.com/blog/cryptographically-secure-random-numbers" target="_blank" rel="noopener" class="reading-card" id="reading-csprng">
+            <div class="reading-icon">📖</div>
+            <div class="reading-title">Cryptographically Secure Random Numbers</div>
+            <div class="reading-desc">Learn why crypto.getRandomValues() is vital for a secure password and how CSPRNG differs from standard pseudo-random generators.</div>
+          </a>
+          <a href="https://www.macrotoolkit.com/utilities/password-entropy-calculator" target="_blank" rel="noopener" class="reading-card" id="reading-entropy">
+            <div class="reading-icon">📖</div>
+            <div class="reading-title">Password Entropy Calculator</div>
+            <div class="reading-desc">Calculate exact theoretical bits of entropy for any character pool and length, avoiding modulo mapping bias reduction.</div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- ============================================
        FOOTER
        ============================================ -->
   <footer class="site-footer">
     <div class="container">
-      Built as an open-source educational experiment · <a href="https://github.com/LetMecopyit/password-randomness-lab" target="_blank" rel="noopener">View source on GitHub</a>
+      <p>Authored by <strong>Sreehari Pradeep</strong> · Modulo Mapping Bias & Rejection Sampling Cybersecurity Lab · Built as an open-source educational experiment</p>
+      <p><a href="https://github.com/LetMecopyit/password-randomness-lab" target="_blank" rel="noopener">View source code on GitHub</a></p>
     </div>
   </footer>
 
